@@ -22,11 +22,15 @@ def extract_repo_names(value):
     return value.replace(" ", "").split(",")
 
 
-entered_repos = input("Repository Names (Comma Separated): ")
-branch_name = input("Branch Name: ")
-commit_message = input("Commit Message: ")
 auto_push = input("Do you want to automatically push to branch name? (Y/N) ")
 auto_raise_pr = input("Do you want to automatically raise a pull request? (Y/N) ")
+clean_project = input("Do you want to remove the repository after changes? (Y/N) ")
+
+entered_repos = input("Repository Names (Comma Separated): ")
+
+if auto_push.lower() == "y" or auto_raise_pr.lower() == "y":
+    branch_name = input("Branch Name: ")
+    commit_message = input("Commit Message: ")
 
 
 def download_repository():
@@ -117,5 +121,6 @@ for repo_name in extract_repo_names(entered_repos):
         print("Something Went Wrong")
 
 os.chdir(project_dir)
-shutil.rmtree("repos")
+if clean_project.lower() == "y":
+    shutil.rmtree("repos")
 print("Finished Successfully")
