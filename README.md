@@ -21,3 +21,7 @@ N: Attempts to make the changes but will not push the changes
 Do you want to automatically raise a pull request? (Y/N): \
 Y: Automatically raises a PR with the library changes \
 N: Makes the changes but will not create a PR
+
+Do you want to remove the repository after changes? (Y/N): \
+Y: Removes the cloned projects at end of execution (recommended if pushing or raising a PR) \
+N: Does not removed cloned repositories (recommended for debugging purposes)
