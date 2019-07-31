@@ -2,11 +2,22 @@
 
 import json
 import os
+from typing import Optional
 
 from graphqlclient import GraphQLClient
 
 client = GraphQLClient('https://api.github.com/graphql')
-client.inject_token(os.environ.get('GITOAUTH'))  # OauthToken 'bearer {token}'
+oauth_token = os.environ.get('GITOAUTH')  # type: Optional[str]
+
+if not oauth_token:
+    print("environment variable $GITOAUTH is not defined")
+    exit(1)
+
+if not oauth_token.startswith("Bearer"):
+    print("environment variable $GITOAUTH does not start with 'Bearer'")
+    exit(1)
+
+client.inject_token(oauth_token)  # OauthToken 'bearer {token}'
 
 
 def graph_ql_search(lib_name):

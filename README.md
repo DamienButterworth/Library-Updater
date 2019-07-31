@@ -6,8 +6,8 @@ Installation Instructions:
 Install 'Hub':
 https://hub.github.com/
 
-Place an OAUTH Token under the environment 'GITOAUTH' or point the code to an OAUTH Token on line:
-https://github.com/DamienButterworth/Library-Updater/blob/a01d6590caf6d11496b26f6b9ae9b5072f0465f4/latest_hmrc_release.py#L9
+Place a [Github Personal Access Token](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line) with full "repo" access, prefixed with "Bearer" under the environment variable 'GITOAUTH' e.g.:  
+`export GITOAUTH="Bearer <Access Token with repo access>"`
 
 Run the application
 

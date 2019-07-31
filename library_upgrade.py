@@ -17,14 +17,17 @@ git_requests.verify_hub_installed()
 
 project_dir = os.getcwd()
 
+# remove this once there's real tests
+test_run = os.environ.get("LIBRARY_UPGRADE_TEST") is not None  # type: bool
+
 
 def extract_repo_names(value):
     return value.replace(" ", "").split(",")
 
 
-auto_push = input("Do you want to automatically push to branch name? (Y/N) ")
-auto_raise_pr = input("Do you want to automatically raise a pull request? (Y/N) ")
-clean_project = input("Do you want to remove the repository after changes? (Y/N) ")
+auto_push = "n" if test_run else input("Do you want to automatically push to branch name? (Y/N) ")  # type: str
+auto_raise_pr = "n" if test_run else input("Do you want to automatically raise a pull request? (Y/N) ")  # type: str
+clean_project = "n" if test_run else input("Do you want to remove the repository after changes? (Y/N) ")  # type: str
 
 entered_repos = input("Repository Names (Comma Separated): ")
 
@@ -34,17 +37,16 @@ if auto_push.lower() == "y" or auto_raise_pr.lower() == "y":
 
 
 def download_repository():
-    if os.getcwd().split()[-1] != "repos":
-        if not os.path.isdir("repos"):
-            os.mkdir("repos")
-        else:
-            shutil.rmtree("repos")
-            os.mkdir("repos")
+    destination_path = "/tmp/" + repo_name
 
-    os.chdir("repos")
-    print(os.getcwd())
-    git_requests.git("clone", "git@github.com:/hmrc/" + repo_name + ".git")
-    return os.getcwd()
+    if not os.path.isdir(destination_path):
+        os.mkdir(destination_path)
+    else:
+        shutil.rmtree(destination_path)
+        os.mkdir(destination_path)
+
+    git_requests.clone("git@github.com:/hmrc/" + repo_name, "--depth 1", destination_path)
+    return destination_path
 
 
 libraries = []
@@ -101,9 +103,8 @@ def get_files(lib):
 
 for repo_name in extract_repo_names(entered_repos):
     try:
-        root = download_repository()
-        os.chdir(root)
-        os.chdir(repo_name)
+        location = download_repository()
+        os.chdir(location)
         if os.path.isdir("project"):
             os.chdir("project")
             get_libraries()
@@ -116,11 +117,10 @@ for repo_name in extract_repo_names(entered_repos):
             libraries = []
         else:
             print("project folder not found in: " + repo_name)
-        os.chdir(project_dir)
+
+        if clean_project.lower() == "y":
+            shutil.rmtree(location)
     except TypeError:
         print("Something Went Wrong")
 
-os.chdir(project_dir)
-if clean_project.lower() == "y":
-    shutil.rmtree("repos")
 print("Finished Successfully")

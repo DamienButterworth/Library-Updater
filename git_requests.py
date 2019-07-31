@@ -2,12 +2,23 @@
 
 import os
 import subprocess
+from typing import Optional
 
 from graphqlclient import GraphQLClient
+
+client = GraphQLClient('https://api.github.com/graphql')
+oauth_token = os.environ.get('GITOAUTH')
+client.inject_token(oauth_token)  # OauthToken 'bearer {token}'
 
 
 def git(*args):
     return subprocess.check_call(['git'] + list(args))
+
+
+def clone(repo_uri: str, args: Optional[str] = None, target: Optional[str] = None):
+    exit_code = subprocess.check_call(["git", "clone"] + args.split(" ") + ["--", repo_uri, target])
+    print("successfully cloned from " + repo_uri + (" into " + target) if target else "")
+    return exit_code
 
 
 def hub(*args):
@@ -19,22 +30,20 @@ def verify_hub_installed():
         subprocess.check_call(['hub'] + list(["--version"]))
         print("Hub installed, continuing")
     except FileNotFoundError:
-        print("Please ensure to install the command-line tool 'hub' found at https://github.com/github/hub")
-        exit(0)
-
-
-client = GraphQLClient('https://api.github.com/graphql')
-client.inject_token(os.environ.get('GITOAUTH'))  # OauthToken 'bearer {token}'
+        print("Please install the command-line tool 'hub' found at https://github.com/github/hub")
+        exit(1)
 
 
 def push_changes(branch_name, commit_message):
+    git("checkout", "-b" + branch_name)
+    git("add", ".")
+
     try:
-        git("checkout", "-b" + branch_name)
-        git("add", ".")
         git("commit", "-am", commit_message)
-        git("push", "--set-upstream", "origin", branch_name)
     except subprocess.CalledProcessError:
         print("No Changes Detected")
+
+    git("push", "--set-upstream", "origin", branch_name)
 
 
 # Ensure Oauth token is defined in the hub config.
