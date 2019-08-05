@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from typing import Pattern
 
 import git_requests
 import os
@@ -50,6 +51,18 @@ def download_repository():
 
 
 libraries = []
+'''
+matches sbt dependencies e.g. `"com.some-org" % "some-library" % "0.1.0"` 
+
+^[^"]* - consume all characters before the first `"`
+"([^"]+)" - captures the first quoted group (without the quotes) (i.e. the organisation)
+[^%]*%+[^"]* - consumes all characters between the organisation and the library name, expecting at least one `%`
+"([^"]+)" - captures the second quoted group (without the quotes) (i.e. the library name)
+[^%]*%[^"]* - consumes all characters between the library name and the library version, expecting a single `%`
+"([^"]+)" - captures the third quoted group (without the quotes) (i.e. the version)
+.*$ - consumes the rest of the line
+'''
+library_dependency_regex = re.compile(r'^[^"]*"([^"]+)"[^%]*%+[^"]*"([^"]+)"[^%]*%[^"]*"([^"]+)".*$')  # type: Pattern[str]
 
 
 def get_libraries():
@@ -57,7 +70,7 @@ def get_libraries():
         if filename.endswith(".scala") or filename.endswith(".sbt"):
             opened_file = open(filename, "r")
             for line in opened_file:
-                matched_library = re.match(r'^[^"]*"([^"]+)"[^%]*%+[^"]*"([^"]+)"[^%]*%[^"]*"([^"]+)".*$', line)
+                matched_library = library_dependency_regex.match(line)
                 if matched_library:
                     libraries.append(matched_library)
 
