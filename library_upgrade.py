@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from typing import Pattern
+from typing import Pattern, Optional
 
 import git_requests
 import os
@@ -14,30 +14,11 @@ class bcolors:
     ENDC = '\033[0m'
 
 
-git_requests.verify_hub_installed()
-
-project_dir = os.getcwd()
-
-# remove this once there's real tests
-test_run = os.environ.get("LIBRARY_UPGRADE_TEST") is not None  # type: bool
-
-
-def extract_repo_names(value):
+def extract_repo_names(value: str):
     return value.replace(" ", "").split(",")
 
 
-auto_push = "n" if test_run else input("Do you want to automatically push to branch name? (Y/N) ")  # type: str
-auto_raise_pr = "n" if test_run else input("Do you want to automatically raise a pull request? (Y/N) ")  # type: str
-clean_project = "n" if test_run else input("Do you want to remove the repository after changes? (Y/N) ")  # type: str
-
-entered_repos = input("Repository Names (Comma Separated): ")
-
-if auto_push.lower() == "y" or auto_raise_pr.lower() == "y":
-    branch_name = input("Branch Name: ")
-    commit_message = input("Commit Message: ")
-
-
-def download_repository():
+def download_repository(repo_name):
     destination_path = "/tmp/" + repo_name
 
     if not os.path.isdir(destination_path):
@@ -50,7 +31,6 @@ def download_repository():
     return destination_path
 
 
-libraries = []
 '''
 matches sbt dependencies e.g. `"com.some-org" % "some-library" % "0.1.0"` 
 
@@ -65,14 +45,18 @@ matches sbt dependencies e.g. `"com.some-org" % "some-library" % "0.1.0"`
 library_dependency_regex = re.compile(r'^[^"]*"([^"]+)"[^%]*%+[^"]*"([^"]+)"[^%]*%[^"]*"([^"]+)".*$')  # type: Pattern[str]
 
 
-def get_libraries():
-    for filename in os.listdir(os.getcwd()):
+def get_libraries(files):
+    libs = []
+
+    for filename in files:
         if filename.endswith(".scala") or filename.endswith(".sbt"):
             opened_file = open(filename, "r")
             for line in opened_file:
                 matched_library = library_dependency_regex.match(line)
                 if matched_library:
-                    libraries.append(matched_library)
+                    libs.append(matched_library)
+
+    return libs
 
 
 def get_sbt_plugin_version():
@@ -114,26 +98,52 @@ def get_files(lib):
             search_file(file, lib)
 
 
-for repo_name in extract_repo_names(entered_repos):
-    try:
-        location = download_repository()
-        os.chdir(location)
-        if os.path.isdir("project"):
-            os.chdir("project")
-            get_libraries()
-            for library in libraries:
-                get_files(library)
-            if auto_push.lower() == "y":
-                git_requests.push_changes(branch_name, commit_message)
-            if auto_raise_pr.lower() == "y":
-                git_requests.raise_pull_request(branch_name)
-            libraries = []
-        else:
-            print("project folder not found in: " + repo_name)
+def upgrade_repos(entered_repos: str,
+                  auto_push: str,
+                  auto_raise_pr: str,
+                  clean_project: str,
+                  branch_name: Optional[str],
+                  commit_message: Optional[str]):
+    for repo_name in extract_repo_names(entered_repos):
+        try:
+            location = download_repository(repo_name)
+            os.chdir(location)
+            if os.path.isdir("project"):
+                os.chdir("project")
+                libraries = get_libraries(os.listdir(os.getcwd()))
+                for library in libraries:
+                    get_files(library)
+                if auto_push.lower() == "y":
+                    git_requests.push_changes(branch_name, commit_message)
+                if auto_raise_pr.lower() == "y":
+                    git_requests.raise_pull_request(branch_name)
+            else:
+                print("project folder not found in: " + repo_name)
 
-        if clean_project.lower() == "y":
-            shutil.rmtree(location)
-    except TypeError:
-        print("Something Went Wrong")
+            if clean_project.lower() == "y":
+                shutil.rmtree(location)
+        except TypeError:
+            print("Something Went Wrong")
 
-print("Finished Successfully")
+
+def run_main():
+    git_requests.verify_hub_installed()
+    project_dir = os.getcwd()
+    # remove this once there's real tests
+    test_run = os.environ.get("LIBRARY_UPGRADE_TEST") is not None  # type: bool
+    auto_push = "n" if test_run else input("Do you want to automatically push to branch name? (Y/N) ")  # type: str
+    auto_raise_pr = "n" if test_run else input("Do you want to automatically raise a pull request? (Y/N) ")  # type: str
+    clean_project = "n" if test_run else input(
+        "Do you want to remove the repository after changes? (Y/N) ")  # type: str
+    entered_repos = input("Repository Names (Comma Separated): ")
+    if auto_push.lower() == "y" or auto_raise_pr.lower() == "y":
+        branch_name = input("Branch Name: ")
+        commit_message = input("Commit Message: ")
+    else:
+        branch_name, commit_message = None, None
+    upgrade_repos(entered_repos, auto_push, auto_raise_pr, clean_project, branch_name, commit_message)
+    print("Finished Successfully")
+
+
+if __name__ == '__main__':
+    run_main()
