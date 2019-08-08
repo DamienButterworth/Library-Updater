@@ -100,7 +100,6 @@ def get_files(lib):
 
 
 def clean_cloned_repos(entered_repos: str, clean_project: str):
-    print(os.getcwd())
     if clean_project.lower() == "y":
         print("Removing Cloned Repos")
         for repo_name in extract_repo_names(entered_repos):
