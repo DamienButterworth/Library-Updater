@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-from typing import Pattern, Optional
+from typing import Pattern, Optional, List
 
 import git_requests
 import os
 import re
-import latest_hmrc_release
 import shutil
+
+from latest_hmrc_release import HmrcReleaseSearch
 
 
 class bcolors:
@@ -46,7 +47,7 @@ library_dependency_regex = re.compile(
     r'^[^"]*"([^"]+)"[^%]*%+[^"]*"([^"]+)"[^%]*%[^"]*"([^"]+)".*$')  # type: Pattern[str]
 
 
-def get_libraries(files):
+def get_libraries(files: List[str]):
     libs = []
 
     for filename in files:
@@ -80,7 +81,7 @@ def search_file(file_name, lib):
             library_name = lib.group(2)
             domain = lib.group(1)
 
-            new_version = latest_hmrc_release.fetch_release(sbt_plugin_version, library_name, old_version, domain)
+            new_version = HmrcReleaseSearch().fetch_release(sbt_plugin_version, library_name, old_version, domain)
             if new_version:
                 if str(old_version) != str(new_version):
                     print(bcolors.OLD + "Old Version: " + line + bcolors.ENDC)
@@ -133,7 +134,6 @@ def upgrade_repos(entered_repos: str,
 
 def run_main():
     git_requests.verify_hub_installed()
-    project_dir = os.getcwd()
     # remove this once there's real tests
     test_run = os.environ.get("LIBRARY_UPGRADE_TEST") is not None  # type: bool
     auto_push = "n" if test_run else input("Do you want to automatically push to branch name? (Y/N) ")  # type: str

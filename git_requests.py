@@ -1,14 +1,7 @@
 #!/usr/bin/env python3
 
-import os
 import subprocess
 from typing import Optional
-
-from graphqlclient import GraphQLClient
-
-client = GraphQLClient('https://api.github.com/graphql')
-oauth_token = os.environ.get('GITOAUTH')
-client.inject_token(oauth_token)  # OauthToken 'bearer {token}'
 
 
 def git(*args):
