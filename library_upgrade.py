@@ -42,7 +42,8 @@ matches sbt dependencies e.g. `"com.some-org" % "some-library" % "0.1.0"`
 "([^"]+)" - captures the third quoted group (without the quotes) (i.e. the version)
 .*$ - consumes the rest of the line
 '''
-library_dependency_regex = re.compile(r'^[^"]*"([^"]+)"[^%]*%+[^"]*"([^"]+)"[^%]*%[^"]*"([^"]+)".*$')  # type: Pattern[str]
+library_dependency_regex = re.compile(
+    r'^[^"]*"([^"]+)"[^%]*%+[^"]*"([^"]+)"[^%]*%[^"]*"([^"]+)".*$')  # type: Pattern[str]
 
 
 def get_libraries(files):
@@ -98,10 +99,17 @@ def get_files(lib):
             search_file(file, lib)
 
 
+def clean_cloned_repos(entered_repos: str, clean_project: str):
+    print(os.getcwd())
+    if clean_project.lower() == "y":
+        print("Removing Cloned Repos")
+        for repo_name in extract_repo_names(entered_repos):
+            shutil.rmtree("/tmp/" + repo_name)
+
+
 def upgrade_repos(entered_repos: str,
                   auto_push: str,
                   auto_raise_pr: str,
-                  clean_project: str,
                   branch_name: Optional[str],
                   commit_message: Optional[str]):
     for repo_name in extract_repo_names(entered_repos):
@@ -120,8 +128,6 @@ def upgrade_repos(entered_repos: str,
             else:
                 print("project folder not found in: " + repo_name)
 
-            if clean_project.lower() == "y":
-                shutil.rmtree(location)
         except TypeError:
             print("Something Went Wrong")
 
@@ -141,7 +147,9 @@ def run_main():
         commit_message = input("Commit Message: ")
     else:
         branch_name, commit_message = None, None
-    upgrade_repos(entered_repos, auto_push, auto_raise_pr, clean_project, branch_name, commit_message)
+    upgrade_repos(entered_repos, auto_push, auto_raise_pr, branch_name, commit_message)
+    clean_cloned_repos(entered_repos, clean_project)
+
     print("Finished Successfully")
 
 
