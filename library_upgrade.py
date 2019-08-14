@@ -142,8 +142,7 @@ def run_main():
         "Do you want to remove the repository after changes? (Y/N) ")  # type: str
     entered_repos = input("Repository Names (Comma Separated): ")
     if auto_push.lower() == "y" or auto_raise_pr.lower() == "y":
-        branch_name = input("Branch Name: ")
-        commit_message = input("Commit Message: ")
+
     else:
         branch_name, commit_message = None, None
     upgrade_repos(entered_repos, auto_push, auto_raise_pr, branch_name, commit_message)

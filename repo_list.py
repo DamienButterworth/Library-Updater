@@ -1,0 +1,33 @@
+#!/usr/bin/env python3
+
+repos = [
+    "bas-gateway",
+    "bas-gateway-frontend",
+    "bas-integration-tests",
+    "bas-proxy",
+    "bas-stub-frontend",
+    "bas-stubs",
+    "company-auth-frontend",
+    "dashing-dashboards",
+    "external-portal-stub",
+    "gateway-demo-frontend",
+    "government-gateway-authentication",
+    "government-gateway-registration-frontend",
+    "multi-factor-authentication",
+    "multi-factor-authentication-frontend",
+    "one-time-password",
+    "one-time-password-admin-frontend",
+    "poison-password",
+    "reauthentication",
+    "reauthentication-frontend",
+    "security-console-frontend",
+    "silent-login-admin",
+    "silent-login-admin-frontend",
+    "sms-gateway",
+    "sms-gateway-admin-frontend",
+    "sms-provider-stubs",
+    "sso",
+    "sso-frontend",
+    "time-based-one-time-password",
+    "two-step-verification-rule-engine"
+]
