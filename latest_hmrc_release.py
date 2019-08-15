@@ -46,7 +46,7 @@ class HmrcReleaseSearch:
                     release_name.replace("-play-25", "").replace("-play-26", "").replace(",", "").split(" ")[0])
                 if test.split(".")[0] == release_number.split(".")[0]:
                     if "-play-25" in release_name:
-                        if sbt_version == "2.5.19":
+                        if "2.5" in sbt_version:
                             return str(release_number + "-play-25")
                         else:
                             return str(release_number + "-play-26")
