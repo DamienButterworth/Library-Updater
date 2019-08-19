@@ -1,3 +1,4 @@
 graphqlclient
 expects
-mamba
+pytest
+pyfakefs
