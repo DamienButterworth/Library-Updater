@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
 import subprocess
+import os
+import shutil
+
 from typing import Optional
 
 
@@ -27,6 +30,19 @@ def verify_hub_installed():
         exit(1)
 
 
+def download_repository(repo_name, directory):
+    destination_path = directory + repo_name
+
+    if not os.path.isdir(destination_path):
+        os.mkdir(destination_path)
+    else:
+        shutil.rmtree(destination_path)
+        os.mkdir(destination_path)
+
+    clone("git@github.com:/hmrc/" + repo_name, "--depth 1", destination_path)
+    return destination_path
+
+
 def push_changes(branch_name, commit_message):
     git("checkout", "-b" + branch_name)
     git("add", ".")
@@ -45,3 +61,10 @@ def raise_pull_request(message):
         hub("pull-request", "-m", message)
     except subprocess.CalledProcessError:
         print("No PR Raised")
+
+
+def git_auto(auto_push: bool, auto_raise_pr: bool, branch_name, commit_message):
+    if auto_push:
+        push_changes(branch_name, commit_message)
+    if auto_raise_pr:
+        raise_pull_request(branch_name)

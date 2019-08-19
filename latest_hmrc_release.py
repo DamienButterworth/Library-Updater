@@ -35,7 +35,12 @@ class HmrcReleaseSearch:
                     }
                     ''')
 
-    def fetch_release(self, sbt_version, library_name, current_version, domain):
+    def fetch_release(self, sbt_version, lib):
+
+        domain = lib.group(1)
+        library_name = lib.group(2)
+        current_version = lib.group(3)
+
         if domain == "uk.gov.hmrc":
             version_number = current_version.replace("-play-25", "").replace("-play-26", "")
 
