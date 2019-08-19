@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 from typing import Pattern, Optional, List
 
-import git_requests
+import file_handler
 import user_input
+import git_requests
 import os
 import re
-import file_handler
 
 from latest_hmrc_release import HmrcReleaseSearch
 
