@@ -4,6 +4,7 @@ from typing import Pattern, Optional, List
 import file_handler
 import user_input
 import git_requests
+import user_input
 import os
 import re
 
