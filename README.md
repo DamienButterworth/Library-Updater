@@ -6,7 +6,7 @@ Requires at least Python 3.5
 ### Installation Instructions: 
 
 Either run
-`pip install requirements.txt` or `pip3 install requirements.txt` depending on your default Python version
+`pip install -r requirements.txt` or `pip3 install -r requirements.txt` depending on your default Python version
 
 Install 'Hub':
 https://hub.github.com/
@@ -32,4 +32,34 @@ Y: Removes the cloned projects at end of execution (recommended if pushing or ra
 N: Does not removed cloned repositories (recommended for debugging purposes)
 
 ### Running the tests
-`python run_tests.py` or `python3 run_tests.py`
+`pytest` in repository directory
+
+## Search Repository
+
+Used to search any number of repositories for a particular string
+
+#### Usage
+
+run search_repository.py
+
+#### Questions: 
+
+##### Repository Names (Comma Separated):
+
+A comma separated list of repositories
+
+e.g. bas-gateway, bas-gateway-frontend, ...etc.
+
+##### Search String:
+
+Enter a string you want to find in the projects
+
+e.g. ContinueUrl 
+
+##### In which files?
+
+Enter a string matching the filename desired
+
+e.g. application.conf or .scala
+
+
