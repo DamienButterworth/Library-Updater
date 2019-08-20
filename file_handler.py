@@ -18,7 +18,7 @@ def get_files_in_dir(file_types: List[str], directory: str):
     for file in os.listdir(directory):
         for t in file_types:
             if file.endswith(t):
-                files.append(directory + "/" + file)
+                files.append(file)
     return files
 
 
