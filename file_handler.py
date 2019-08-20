@@ -2,7 +2,9 @@
 
 import os
 import shutil
-from typing import List
+from pathlib import Path
+from typing import Optional, List
+
 
 
 class BColors:
@@ -16,7 +18,15 @@ def get_files_in_dir(file_types: List[str], directory: str):
     for file in os.listdir(directory):
         for t in file_types:
             if file.endswith(t):
-                files.append(file)
+                files.append(directory + "/" + file)
+    return files
+
+
+def get_files_in_dir_rec(file_name: str, directory: str):
+    files = []
+    for filename in Path(directory).glob("**/*"):
+        if file_name.lower() in filename.name.lower():
+            files.append(filename.as_posix())
     return files
 
 
@@ -26,16 +36,19 @@ def remove_tmp_folders(folders: List[str]):
         shutil.rmtree("/tmp/" + folder)
 
 
-def find_lines(search_string: str, file):
+def find_lines(search_string: str, file, show_line_number: Optional[bool] = None):
     lines = []
+    line_number = 0
     opened_file = open(file, "r")
     for line in opened_file:
+        line_number += 1
         if search_string in line:
-            lines.append(line)
+            if show_line_number:
+                lines.append((line, line_number))
+            else:
+                lines.append(line)
     if lines:
         return lines
-    else:
-        return []
 
 
 def replace_line(line, old_line, new_line):
