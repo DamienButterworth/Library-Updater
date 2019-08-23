@@ -2,7 +2,6 @@
 Tool used to update libraries (minor versions) on Scala projects
 
 Requires at least Python 3.5
-###### note: The debian version of 3.5 doesn't successfully run the tests 
 
 ### Installation Instructions: 
 
@@ -14,8 +13,6 @@ https://hub.github.com/
 
 Place a [Github Personal Access Token](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line) with full "repo" access, prefixed with "Bearer" under the environment variable 'GITOAUTH' e.g.:  
 `export GITOAUTH="Bearer <Access Token with repo access>"`
-
-Run the setup.py before executing any scripts
 
 ### Running the application
 
@@ -82,7 +79,7 @@ run find_and_replace.py
 "Replace String with: " The string you want to replace with
 
 ### Running the tests
-`pytest` in repository directory after running the setup.py
+`pytest` in repository directory
 
 
 

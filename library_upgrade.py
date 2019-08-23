@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 from typing import Pattern, Optional, List
 
-from src.helpers import git_requests, file_handler, user_input
+import user_input
+import file_handler
+import git_requests
 import os
 import re
 
-from src.helpers.latest_hmrc_release import HmrcReleaseSearch
+from latest_hmrc_release import HmrcReleaseSearch
 
 '''
 matches sbt dependencies e.g. `"com.some-org" % "some-library" % "0.1.0"` 

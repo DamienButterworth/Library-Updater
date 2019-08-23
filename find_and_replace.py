@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-from src.helpers import file_handler, user_input
+import user_input
+import file_handler
 
 directory = user_input.extract_user_string("Directory to scan for files? ")
 file_name = user_input.extract_user_string("Filename e.g. '.txt' or 'SsoConnector.scala: '")

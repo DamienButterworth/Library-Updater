@@ -1,4 +1,4 @@
-from src.helpers import file_handler
+import file_handler
 
 import os
 

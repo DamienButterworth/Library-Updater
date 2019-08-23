@@ -4,7 +4,7 @@ import os
 import shutil
 import collections
 
-from src.helpers import logger as l
+import logger as l
 from pathlib import Path
 from typing import Optional, List
 
