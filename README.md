@@ -82,4 +82,17 @@ run find_and_replace.py
 `pytest` in repository directory
 
 
+### Use in Docker
+
+This can also be used without other installation by building a Docker image.
+
+Build it like this:
+
+`docker build -t library-updater .`
+
+Then run it like this:
+
+`docker run -it --rm --mount type=bind,source=$HOME/.ssh/id_rsa,target=/root/.ssh/id_rsa --mount type=bind,source=$HOME/ws/,target=/tmp --env GITOAUTH="$GITOAUTH" library-updater`
+
+The project will have been cloned and updated in the a sub-directory of $HOME/ws
 
