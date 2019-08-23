@@ -31,16 +31,19 @@ def verify_hub_installed():
 
 
 def download_repository(repo_name, directory):
-    destination_path = directory + repo_name
+    try:
+        destination_path = directory + repo_name
 
-    if not os.path.isdir(destination_path):
-        os.mkdir(destination_path)
-    else:
-        shutil.rmtree(destination_path)
-        os.mkdir(destination_path)
+        if not os.path.isdir(destination_path):
+            os.mkdir(destination_path)
+        else:
+            shutil.rmtree(destination_path)
+            os.mkdir(destination_path)
 
-    clone("git@github.com:/hmrc/" + repo_name, "--depth 1", destination_path)
-    return destination_path
+        clone("git@github.com:/hmrc/" + repo_name, "--depth 1", destination_path)
+        return destination_path
+    except subprocess.CalledProcessError:
+        exit(1)
 
 
 def push_changes(branch_name, commit_message):

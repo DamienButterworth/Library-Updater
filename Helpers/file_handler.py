@@ -2,12 +2,14 @@
 
 import os
 import shutil
+import collections
+
+from Helpers import logger as l
 from pathlib import Path
 from typing import Optional, List
 
 
-
-class BColors:
+class ChangeColors:
     old = '\033[91m'
     new = '\033[92m'
     end = '\033[0m'
@@ -53,8 +55,16 @@ def find_lines(search_string: str, file, show_line_number: Optional[bool] = None
 
 def replace_line(line, old_line, new_line):
     if str(old_line) != str(new_line):
-        print(BColors.old + "Old Version: " + line + BColors.end)
-        print(BColors.new + "New Version: " + line.replace(old_line, new_line) + BColors.end)
+        l.r_message("Old Version: " + line + "\n")
+        l.g_message("New Version: " + line.replace(old_line, new_line) + "\n")
         return line.replace(old_line, new_line)
     else:
         return line
+
+
+def count_duplicate_lines(file_path):
+    with open(file_path) as file:
+        counts = collections.Counter(l.strip() for l in file)
+        for line, count in counts.most_common():
+            print("Line: " + line.replace(",", "").replace("\"", "") + "\nCount: " + str(count) + "\n")
+
