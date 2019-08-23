@@ -2,7 +2,7 @@
 Tool used to update libraries (minor versions) on Scala projects
 
 Requires at least Python 3.5
-note: The debian version of 3.5 doesn't successfully run the tests 
+###### note: The debian version of 3.5 doesn't successfully run the tests 
 
 ### Installation Instructions: 
 
@@ -19,7 +19,7 @@ Run the setup.py before executing any scripts
 
 ### Running the application
 
-####Library Updater
+#### Library Updater
 
 Branch Name: The name of the branch created by the tool (if requested)  
 Commit Message: The message put in the commit (if requested) 
