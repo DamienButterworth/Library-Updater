@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os
-from Helpers import logger as log
+from src.helpers import logger as log
 
 
 def yes_no_question(question: str):

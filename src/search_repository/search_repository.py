@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from Helpers import file_handler, git_requests, user_input
+from src.helpers import git_requests, file_handler, user_input
 
 repos = user_input.comma_str_to_list()
 search_string = user_input.extract_user_string("Search String: ")

@@ -1,6 +1,6 @@
 from pyfakefs.fake_filesystem_unittest import TestCase
 
-import library_upgrade
+from src.library_updater import library_upgrade
 
 
 class LibraryUpgrade(TestCase):
